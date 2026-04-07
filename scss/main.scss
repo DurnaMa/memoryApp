@@ -1,0 +1,16 @@
+// 1. Abstracts (Variablen, Mixins - falls vorhanden)
+// @use 'abstracts/variables';
+
+// 2. Vendors (Externe CSS-Frameworks)
+
+// 3. Base Styles
+@use 'base/reset';
+
+// 4. Layout (Header, Footer, Grid)
+
+// 5. Components
+@use 'components/card';
+
+// 6. Pages (Spezifische Styles für einzelne Seiten)
+
+// 7. Themes
