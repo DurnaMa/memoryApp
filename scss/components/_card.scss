@@ -24,9 +24,17 @@
   &__face {
     position: absolute;
     inset: 0;
-    background-image: linear-gradient(45deg, $color-teal, $color-turquoise);
     backface-visibility: hidden;
-    border-right: 8px;
+    border-right: 8px solid transparent;
+
+    &--front {
+      background-image:
+        src("svg/daLogo.svg"),
+        linear-gradient(45deg, $color-teal, $color-turquoise);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 50%, cover;
+    }
 
     &--back {
       display: flex;
@@ -34,7 +42,6 @@
       justify-content: center;
       background-color: $color-mintcream;
       transform: rotateY(180deg);
-
     }
   }
 

@@ -1,17 +1,19 @@
-// game.ts
+import type { GameConfig } from "../types/types.ts";
+
 export class MemoryGame {
+  private config: GameConfig;
   private gridElement: HTMLElement;
-  private cardCount: number;
   private flippedCards: HTMLElement[] = [];
   private isLocked: boolean = false;
 
-  constructor(gridSelector: string, cardCount: number) {
-    const el = document.querySelector(gridSelector);
-    if (!el) throw new Error(`Element ${gridSelector} nicht gefunden`);
+  constructor(config: GameConfig) {
+    this.config = config;
 
-    this.gridElement = el as HTMLElement;
-    this.cardCount = cardCount;
+    const selector = config.gridSelector ?? "#field";
+    const element = document.querySelector(selector);
+    if (!element) throw new Error(`Element ${selector} nicht gefunden`);
 
+    this.gridElement = element as HTMLElement;
     this.init();
   }
 
@@ -23,7 +25,9 @@ export class MemoryGame {
 
   private updateGridSize(): void {
     let columns: number;
-    switch (this.cardCount) {
+    switch (
+      this.config.cardCount
+    ) {
       case 16:
         columns = 4;
         break;
@@ -40,34 +44,37 @@ export class MemoryGame {
   }
 
   private generateBoard(): void {
-    const codeVibesTheme = [
-      "/public/svg/Angular.svg",
-      "/public/svg/atomic.svg",
-      "/public/svg/Bootstrap.svg",
-      "public/svg/CSS.svg",
-      "public/svg/daLogo.svg",
-      "public/svg/django.svg",
-      "public/svg/Firebase.svg",
-      "public/svg/github.svg",
-      "public/svg/git.svg",
-      "public/svg/HTML.svg",
-      "public/svg/js.svg",
-      "public/svg/NodeJs.svg",
-      "public/svg/NodeJs.svg",
-      "public/svg/Sass.svg",
-      "public/svg/sql.svg",
-      "public/svg/Terminal.svg",
-      "public/svg/ts.svg",
-      "public/svg/vite.svg",
-      "public/svg/VSCode.svg",
-    ];
-    const selectedSymbols = codeVibesTheme.slice(0, this.cardCount / 2);
+    const themes = {
+      codeVibes: [
+        "/svg/Angular.svg",
+        "/svg/atomic.svg",
+        "/svg/Bootstrap.svg",
+        "/svg/CSS.svg",
+        "/svg/django.svg",
+        "/svg/Firebase.svg",
+        "/svg/github.svg",
+        "/svg/git.svg",
+        "/svg/HTML.svg",
+        "/svg/js.svg",
+        "/svg/NodeJs.svg",
+        "/svg/Sass.svg",
+        "/svg/sql.svg",
+        "/svg/Terminal.svg",
+        "/svg/ts.svg",
+        "/svg/vite.svg",
+        "/svg/VSCode.svg",
+      ],
+    };
+
+    const selectedSymbols = themes[this.config.theme].slice(
+      0,
+      this.config.cardCount / 2,
+    );
     const gameSet = [...selectedSymbols, ...selectedSymbols].sort(
       () => Math.random() - 0.5,
     );
 
     this.gridElement.innerHTML = "";
-
     gameSet.forEach((imagePath) => {
       const card = document.createElement("button");
       card.classList.add("card");
@@ -88,7 +95,6 @@ export class MemoryGame {
     this.gridElement.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
       const card = target.closest(".card") as HTMLElement;
-
       if (card && !this.isLocked && !card.classList.contains("is-flipped")) {
         this.handleCardClick(card);
       }
@@ -98,22 +104,18 @@ export class MemoryGame {
   private handleCardClick(card: HTMLElement): void {
     card.classList.add("is-flipped");
     this.flippedCards.push(card);
-
     if (this.flippedCards.length === 2) {
       this.checkMatch();
     }
   }
 
   private checkMatch(): void {
-    this.isLocked = true; // Klicks sperren
+    this.isLocked = true;
     const [card1, card2] = this.flippedCards;
-
     if (card1.dataset.symbol === card2.dataset.symbol) {
-      // Treffer!
       this.flippedCards = [];
       this.isLocked = false;
     } else {
-      // Kein Treffer: nach 1 Sekunde wieder umdrehen
       setTimeout(() => {
         card1.classList.remove("is-flipped");
         card2.classList.remove("is-flipped");
