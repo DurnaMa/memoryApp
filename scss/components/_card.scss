@@ -28,9 +28,7 @@
     border-right: 8px solid transparent;
 
     &--front {
-      background-image:
-        src("svg/daLogo.svg"),
-        linear-gradient(45deg, $color-teal, $color-turquoise);
+      background-image: url("../../public/svg/daLogo.svg"), linear-gradient(45deg, $color-teal, $color-turquoise);
       background-repeat: no-repeat;
       background-position: center;
       background-size: 50%, cover;

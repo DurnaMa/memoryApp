@@ -81,7 +81,7 @@ export class MemoryGame {
       card.dataset.symbol = imagePath;
       card.innerHTML = `
         <div class="card__inner">
-          <div class="card__face"></div>
+          <div class="card__face card__face--front"></div>
           <div class="card__face card__face--back">
             <img src="${imagePath}" alt="Icon" class="card__icon">
           </div>
