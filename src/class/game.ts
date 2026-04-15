@@ -24,22 +24,13 @@ export class MemoryGame {
   }
 
   private updateGridSize(): void {
-    let columns: number;
-    switch (
-      this.config.cardCount
-    ) {
-      case 16:
-        columns = 4;
-        break;
-      case 24:
-        columns = 6;
-        break;
-      case 36:
-        columns = 6;
-        break;
-      default:
-        columns = 4;
-    }
+    const gridMapping: Record<number, number> = {
+      16: 4,
+      24: 6,
+      36: 6
+    };
+
+    const columns = gridMapping[this.config.cardCount] || 4;
     this.gridElement.style.setProperty("--grid-cols", columns.toString());
   }
 
@@ -66,15 +57,15 @@ export class MemoryGame {
       ],
     };
 
-    const selectedSymbols = themes[this.config.theme].slice(
-      0,
-      this.config.cardCount / 2,
-    );
-    const gameSet = [...selectedSymbols, ...selectedSymbols].sort(
-      () => Math.random() - 0.5,
-    );
+    const count = this.config.cardCount / 2;
+    const selectedSymbols = themes[this.config.theme].slice(0, count);
+    const gameSet = [...selectedSymbols, ...selectedSymbols];
+
+    this.shuffle(gameSet);
 
     this.gridElement.innerHTML = "";
+    const fragment = document.createDocumentFragment();
+
     gameSet.forEach((imagePath) => {
       const card = document.createElement("button");
       card.classList.add("card");
@@ -82,13 +73,22 @@ export class MemoryGame {
       card.innerHTML = `
         <div class="card__inner">
           <div class="card__face card__face--front"></div>
-          <div class="card__face card__face--back">
+            <div class="card__face card__face--back">
             <img src="${imagePath}" alt="Icon" class="card__icon">
           </div>
         </div>
       `;
-      this.gridElement.appendChild(card);
+      fragment.appendChild(card);
     });
+
+    this.gridElement.appendChild(fragment);
+  }
+
+  private shuffle(array: any[]): void {
+    for (let indexGenerateBoard = array.length - 1; indexGenerateBoard > 0; indexGenerateBoard--) {
+      const randomIndex = Math.floor(Math.random() * (indexGenerateBoard + 1));
+      [array[indexGenerateBoard], array[randomIndex]] = [array[randomIndex], array[indexGenerateBoard]];
+    }
   }
 
   private addEventListeners(): void {
