@@ -1,5 +1,27 @@
 import type { GameConfig } from "../types/types.ts";
 
+const THEMES: Record<string, string[]> = {
+  codeVibes: [
+    "/svg/Angular.svg",
+    "/svg/atomic.svg",
+    "/svg/Bootstrap.svg",
+    "/svg/CSS.svg",
+    "/svg/django.svg",
+    "/svg/Firebase.svg",
+    "/svg/github.svg",
+    "/svg/git.svg",
+    "/svg/HTML.svg",
+    "/svg/js.svg",
+    "/svg/NodeJs.svg",
+    "/svg/Sass.svg",
+    "/svg/sql.svg",
+    "/svg/Terminal.svg",
+    "/svg/ts.svg",
+    "/svg/vite.svg",
+    "/svg/VSCode.svg",
+  ],
+};
+
 export class MemoryGame {
   private config: GameConfig;
   private gridElement: HTMLElement;
@@ -35,30 +57,9 @@ export class MemoryGame {
   }
 
   private generateBoard(): void {
-    const themes = {
-      codeVibes: [
-        "/svg/Angular.svg",
-        "/svg/atomic.svg",
-        "/svg/Bootstrap.svg",
-        "/svg/CSS.svg",
-        "/svg/django.svg",
-        "/svg/Firebase.svg",
-        "/svg/github.svg",
-        "/svg/git.svg",
-        "/svg/HTML.svg",
-        "/svg/js.svg",
-        "/svg/NodeJs.svg",
-        "/svg/Sass.svg",
-        "/svg/sql.svg",
-        "/svg/Terminal.svg",
-        "/svg/ts.svg",
-        "/svg/vite.svg",
-        "/svg/VSCode.svg",
-      ],
-    };
-
     const count = this.config.cardCount / 2;
-    const selectedSymbols = themes[this.config.theme].slice(0, count);
+    const themeSymbols = THEMES[this.config.theme] || THEMES.codeVibes;
+    const selectedSymbols = themeSymbols.slice(0, count);
     const gameSet = [...selectedSymbols, ...selectedSymbols];
 
     this.shuffle(gameSet);
@@ -84,10 +85,10 @@ export class MemoryGame {
     this.gridElement.appendChild(fragment);
   }
 
-  private shuffle(array: any[]): void {
-    for (let indexGenerateBoard = array.length - 1; indexGenerateBoard > 0; indexGenerateBoard--) {
-      const randomIndex = Math.floor(Math.random() * (indexGenerateBoard + 1));
-      [array[indexGenerateBoard], array[randomIndex]] = [array[randomIndex], array[indexGenerateBoard]];
+  private shuffle<T>(array: T[]): void {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
   }
 
