@@ -1,4 +1,6 @@
 import type { GameConfig } from "../types/types.ts";
+import {HeaderTemplate} from "../templates/headerTemplate.ts";
+import {CardTemplate} from "../templates/cardTemplate.ts";
 
 const THEMES: Record<string, string[]> = {
   codeVibes: [
@@ -56,6 +58,17 @@ export class MemoryGame {
     this.gridElement.style.setProperty("--grid-cols", columns.toString());
   }
 
+  private renderUI() {
+    const headerContainer = document.querySelector("#game-header")
+    if(headerContainer) {
+      headerContainer.innerHTML = HeaderTemplate({
+        scoreBlue: 0,
+        scoreOrange: 6,
+        currentPlayer: "blue"
+      })
+    }
+  }
+
   private generateBoard(): void {
     const count = this.config.cardCount / 2;
     const themeSymbols = THEMES[this.config.theme] || THEMES.codeVibes;
@@ -71,18 +84,12 @@ export class MemoryGame {
       const card = document.createElement("button");
       card.classList.add("card");
       card.dataset.symbol = imagePath;
-      card.innerHTML = `
-        <div class="card__inner">
-          <div class="card__face card__face--front"></div>
-            <div class="card__face card__face--back">
-            <img src="${imagePath}" alt="Icon" class="card__icon">
-          </div>
-        </div>
-      `;
+      card.innerHTML = CardTemplate(imagePath)
       fragment.appendChild(card);
     });
 
     this.gridElement.appendChild(fragment);
+    this.renderUI();
   }
 
   private shuffle<T>(array: T[]): void {
