@@ -1,10 +1,12 @@
+@use "../abstract/variables" as *;
+
 .game-header {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  background-color: #262d31; // Dunkler Hintergrund aus dem Bild
-  color: #ffffff;
+  padding: 1rem 5.5rem;
+  background-color: $bg-color;
+  color: $text-white;
   font-family: sans-serif;
 
   &__score-group {
@@ -12,7 +14,7 @@
     display: flex;
     gap: 1.5rem;
     background-color: rgba(255, 255, 255, 0.05);
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1rem;
     border-radius: 4px;
   }
 
@@ -20,30 +22,46 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-weight: 600;
+    font-weight: bold;
 
-    &--blue { color: #00d2ff; }
-    &--orange { color: #ff8c69; }
+    &--blue {
+      color: $blue-player;
+    }
+    &--orange {
+      color: $orange-player;
+    }
   }
 
   &__current-player {
     justify-self: center;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 1rem;
-    color: #bdc3c7;
+    gap: 10px;
+    border: 2px solid rgba($pink-border, 0.5);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
   }
 
   &__icon {
     width: 12px;
     height: 12px;
     background-color: currentColor;
-    // Erzeugt die Pfeilform aus dem Design
-    clip-path: polygon(0% 20%, 60% 20%, 60% 0%, 100% 50%, 60% 100%, 60% 80%, 0% 80%);
+    clip-path: polygon(
+      0% 20%,
+      60% 20%,
+      60% 0%,
+      100% 50%,
+      60% 100%,
+      60% 80%,
+      0% 80%
+    );
 
-    &--blue { color: #00d2ff; }
-    &--orange { color: #ff8c69; }
+    &--blue {
+      color: $blue-player;
+    }
+    &--orange {
+      color: $orange-player;
+    }
   }
 
   &__actions {
@@ -51,18 +69,16 @@
   }
 
   &__exit-btn {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid #454d52;
-    color: #ffffff;
+    background-color: transparent;
+    border: 1px solid lighten($bg-color, 15%);
+    color: $text-white;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    transition: background 0.2s;
 
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
-      border-color: #5d666d;
     }
   }
 }

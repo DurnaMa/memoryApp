@@ -21,6 +21,7 @@ const THEMES: Record<string, string[]> = {
     "/svg/ts.svg",
     "/svg/vite.svg",
     "/svg/VSCode.svg",
+    "/svg/python.svg"
   ],
 };
 
