@@ -1,6 +1,7 @@
 import "../scss/main.scss";
 import { MemoryGame } from "./class/game.ts";
 import type { Theme, CardCount } from "./types/types.ts";
+import {startScreenTemplate} from "./templates/startScreenTemplate.ts";
 
 const html = String.raw;
 
@@ -14,7 +15,7 @@ class App {
 
   private showHome() {
     this.appEL.innerHTML = html` <button id="play-btn">Play</button> `;
-
+    this.appEL.innerHTML = startScreenTemplate;
     document.querySelector("#play-btn")?.addEventListener("click", () => {
       this.showSetting();
     });

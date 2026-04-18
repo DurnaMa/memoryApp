@@ -4,6 +4,7 @@
 // 2. Vendors (Externe CSS-Frameworks)
 
 // 3. Base Styles
+@use "base/fonts";
 @use 'base/reset';
 
 // 4. Layout (Header, Footer, Grid)
@@ -13,6 +14,7 @@
 @use 'components/card';
 @use 'components/game-header';
 @use 'components/memor-board';
+@use "components/homeScreen";
 
 // 6. Pages (Spezifische Styles für einzelne Seiten)
 

@@ -13,5 +13,9 @@
     "sass": "^1.99.0",
     "typescript": "~5.9.3",
     "vite": "^8.0.3"
+  },
+  "dependencies": {
+    "@fontsource/almarai": "^5.2.8",
+    "@fontsource/red-rose": "^5.2.7"
   }
 }
