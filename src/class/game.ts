@@ -1,6 +1,6 @@
 import type { GameConfig } from "../types/types.ts";
-import {HeaderTemplate} from "../templates/headerTemplate.ts";
-import {CardTemplate} from "../templates/cardTemplate.ts";
+import { HeaderTemplate } from "../templates/headerTemplate.ts";
+import { CardTemplate } from "../templates/cardTemplate.ts";
 
 const THEMES: Record<string, string[]> = {
   codeVibes: [
@@ -21,18 +21,26 @@ const THEMES: Record<string, string[]> = {
     "/svg/ts.svg",
     "/svg/vite.svg",
     "/svg/VSCode.svg",
-    "/svg/python.svg"
+    "/svg/python.svg",
   ],
 };
 
 export class MemoryGame {
   private config: GameConfig;
   private gridElement: HTMLElement;
+
   private flippedCards: HTMLElement[] = [];
   private isLocked: boolean = false;
 
+  private scoreBlue: number = 0;
+  private scoreOrange: number = 0;
+  private currentPlayer: "blue" | "orange" = "blue";
+  private matchedPairs: number = 0;
+  private totalPairs: number = 0;
+
   constructor(config: GameConfig) {
     this.config = config;
+    this.totalPairs = config.cardCount / 2;
 
     const selector = config.gridSelector ?? "#field";
     const element = document.querySelector(selector);
@@ -52,27 +60,29 @@ export class MemoryGame {
     const gridMapping: Record<number, number> = {
       16: 4,
       24: 6,
-      36: 6
+      36: 6,
     };
-
     const columns = gridMapping[this.config.cardCount] || 4;
     this.gridElement.style.setProperty("--grid-cols", columns.toString());
   }
 
-  private renderUI() {
-    const headerContainer = document.querySelector("#game-header")
-    if(headerContainer) {
+  private renderUI(): void {
+    const headerContainer = document.querySelector("#game-header");
+    if (headerContainer) {
       headerContainer.innerHTML = HeaderTemplate({
-        scoreBlue: 0,
-        scoreOrange: 6,
-        currentPlayer: "blue"
-      })
+        scoreBlue: this.scoreBlue,
+        scoreOrange: this.scoreOrange,
+        currentPlayer: this.currentPlayer,
+      });
+
+      const exitBtn = headerContainer.querySelector(".game-header__exit-btn");
+      exitBtn?.addEventListener("click", () => location.reload());
     }
   }
 
   private generateBoard(): void {
     const count = this.config.cardCount / 2;
-    const themeSymbols = THEMES[this.config.theme] || THEMES.codeVibes;
+    const themeSymbols = THEMES[this.config.theme] || THEMES["codeVibes"];
     const selectedSymbols = themeSymbols.slice(0, count);
     const gameSet = [...selectedSymbols, ...selectedSymbols];
 
@@ -85,7 +95,7 @@ export class MemoryGame {
       const card = document.createElement("button");
       card.classList.add("card");
       card.dataset.symbol = imagePath;
-      card.innerHTML = CardTemplate(imagePath)
+      card.innerHTML = CardTemplate(imagePath);
       fragment.appendChild(card);
     });
 
@@ -104,7 +114,13 @@ export class MemoryGame {
     this.gridElement.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
       const card = target.closest(".card") as HTMLElement;
-      if (card && !this.isLocked && !card.classList.contains("is-flipped")) {
+
+      if (
+          card &&
+          !this.isLocked &&
+          !card.classList.contains("is-flipped") &&
+          !card.classList.contains("is-matched")
+      ) {
         this.handleCardClick(card);
       }
     });
@@ -113,24 +129,70 @@ export class MemoryGame {
   private handleCardClick(card: HTMLElement): void {
     card.classList.add("is-flipped");
     this.flippedCards.push(card);
+
     if (this.flippedCards.length === 2) {
+      this.isLocked = true;
       this.checkMatch();
     }
   }
 
   private checkMatch(): void {
-    this.isLocked = true;
     const [card1, card2] = this.flippedCards;
-    if (card1.dataset.symbol === card2.dataset.symbol) {
-      this.flippedCards = [];
-      this.isLocked = false;
+    const isMatch = card1.dataset.symbol === card2.dataset.symbol;
+
+    if (isMatch) {
+      this.handleMatch(card1, card2);
     } else {
-      setTimeout(() => {
-        card1.classList.remove("is-flipped");
-        card2.classList.remove("is-flipped");
-        this.flippedCards = [];
-        this.isLocked = false;
-      }, 1000);
+      this.handleMismatch(card1, card2);
     }
+  }
+
+  private handleMatch(card1: HTMLElement, card2: HTMLElement): void {
+
+    card1.classList.add("is-matched");
+    card2.classList.add("is-matched");
+
+    if (this.currentPlayer === "blue") {
+      this.scoreBlue++;
+    } else {
+      this.scoreOrange++;
+    }
+
+    this.matchedPairs++;
+    this.flippedCards = [];
+    this.isLocked = false;
+
+    this.renderUI();
+
+    if (this.matchedPairs === this.totalPairs) {
+      setTimeout(() => this.showWinner(), 500);
+    }
+  }
+
+  private handleMismatch(card1: HTMLElement, card2: HTMLElement): void {
+    setTimeout(() => {
+      card1.classList.remove("is-flipped");
+      card2.classList.remove("is-flipped");
+      this.flippedCards = [];
+
+      this.currentPlayer = this.currentPlayer === "blue" ? "orange" : "blue";
+
+      this.isLocked = false;
+      this.renderUI();
+    }, 1000);
+  }
+
+  private showWinner(): void {
+    let message: string;
+
+    if (this.scoreBlue > this.scoreOrange) {
+      message = `🎉 Blue gewinnt! (${this.scoreBlue} : ${this.scoreOrange})`;
+    } else if (this.scoreOrange > this.scoreBlue) {
+      message = `🎉 Orange gewinnt! (${this.scoreOrange} : ${this.scoreBlue})`;
+    } else {
+      message = `🤝 Unentschieden! (${this.scoreBlue} : ${this.scoreOrange})`;
+    }
+
+    alert(message);
   }
 }
