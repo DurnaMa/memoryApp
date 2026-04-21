@@ -75,16 +75,16 @@ export const settingTemplate = html`
           <img src="/svg/codeVibes/git.svg" alt="preview card 2" />
         </div>
       </div>
-    </div>
-    <div class="settings__footer">
-      <span>Game theme</span>
-      <img src="/svg/settings/verticalLine.svg" alt="verticalLine" />
-      <span>Player</span>
-      <img src="/svg/settings/verticalLine.svg" alt="verticalLine" />
-      <span>Board size</span>
-      <button class="settings__submit" type="submit" form="setting-from">
-        Start
-      </button>
+      <div class="settings__footer">
+        <span>Game theme</span>
+        <img src="/svg/settings/verticalLine.svg" alt="verticalLine" />
+        <span>Player</span>
+        <img src="/svg/settings/verticalLine.svg" alt="verticalLine" />
+        <span>Board size</span>
+        <button class="settings__submit" type="submit" form="setting-from">
+          Start
+        </button>
+      </div>
     </div>
   </main>
 `;
