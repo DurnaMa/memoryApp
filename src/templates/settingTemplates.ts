@@ -70,6 +70,25 @@ export const settingTemplate = html`
     </div>
     <div class="settings__right">
       <div class="settings__preview">
+        <div class="settings__preview-header">
+          <div class="settings__preview-scores">
+            <span
+              class="settings__preview-dot settings__preview-dot--blue"
+            ></span
+            >Blue 0
+            <span
+              class="settings__preview-dot settings__preview-dot--orange"
+            ></span
+            >Orange 5
+          </div>
+          <div class="settings__preview-player">
+            Current player:
+            <span
+              class="settings__preview-dot settings__preview-dot--blue"
+            ></span>
+          </div>
+          <div class="settings__preview-exit">⊡ Exit game</div>
+        </div>
         <div class="settings__preview-card--front"></div>
         <div class="settings__preview-card--back">
           <img src="/svg/codeVibes/git.svg" alt="preview card 2" />

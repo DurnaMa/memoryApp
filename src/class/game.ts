@@ -41,7 +41,7 @@ export class MemoryGame {
   constructor(config: GameConfig) {
     this.config = config;
     this.totalPairs = config.cardCount / 2;
-
+    this.currentPlayer = config.startingPlayer;
     const selector = config.gridSelector ?? "#field";
     const element = document.querySelector(selector);
     if (!element) throw new Error(`Element ${selector} nicht gefunden`);

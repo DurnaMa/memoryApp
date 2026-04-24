@@ -1,6 +1,6 @@
 import "../scss/main.scss";
 import { MemoryGame } from "./class/game.ts";
-import type { Theme, CardCount } from "./types/types.ts";
+import type { Theme, CardCount, Player } from "./types/types.ts";
 import {startScreenTemplate} from "./templates/startScreenTemplate.ts";
 import {settingTemplate} from "./templates/settingTemplates.ts";
 
@@ -34,12 +34,13 @@ class App {
 
         const theme = data.get("theme") as string;
         const cardCount = Number(data.get("cardCount"));
+        const player = (data.get("player") as string) || "blue";
 
-        this.showGame(theme, cardCount);
+        this.showGame(theme, cardCount, player);
       });
   }
 
-  private showGame(theme: string, cardCount: number) {
+  private showGame(theme: string, cardCount: number, player: string) {
     this.appEL.innerHTML = html`
       <section>
         <div class="memory-board">
@@ -51,6 +52,7 @@ class App {
     new MemoryGame({
       theme: theme as Theme,
       cardCount: cardCount as CardCount,
+      startingPlayer: player as Player,
     });
   }
 }
