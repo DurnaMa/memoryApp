@@ -1,22 +1,27 @@
-// 1. Abstracts (Variablen, Mixins - falls vorhanden)
+// 1. Abstracts
 @use 'abstract/variables';
+@use 'abstract/mixins';
 
-// 2. Vendors (Externe CSS-Frameworks)
+// 2. Vendors
 
-// 3. Base Styles
-@use "base/fonts";
+// 3. Base
+@use 'base/fonts';
 @use 'base/reset';
 
-// 4. Layout (Header, Footer, Grid)
+// 4. Layout
 
 // 5. Components
 @use 'components/game-grid';
 @use 'components/card';
 @use 'components/game-header';
 @use 'components/memor-board';
-@use "components/homeScreen";
-@use "components/settings";
+@use 'components/homeScreen';
+@use 'components/settings';
 
-// 6. Pages (Spezifische Styles für einzelne Seiten)
+// 6. Pages
 
 // 7. Themes
+@use 'themes/code-vibes';
+@use 'themes/gaming';
+@use 'themes/da-projects';
+@use 'themes/foods';

@@ -1,13 +1,33 @@
-$color-turquoise: #4dd5bc;
-$color-teal: #286f62;
-$color-mintcream: #e8f3f0;
-$color-whitesmoke: #f2f2f2;
+:root {
+  --color-bg: #2a2a2a;
+  --color-text: #ffffff;
+  --color-primary: #4dd5bc;
+  --color-secondary: #286f62;
+  --color-surface: #e8f3f0;
+  --color-whitesmoke: #f2f2f2;
+  --color-settings-bg: #ffffff;
+  --color-settings-text: #1a1a1a;
+  --color-preview-bg: #222222;
+  --color-preview-header: #1a1a1a;
+  --color-footer-bg: #f5f5f5;
+  --color-radio-border: #1a1a1a;
+  --color-radio-fill: #1a1a1a;
+  --color-label-text: #333;
+  --color-btn-bg: #e8f57a;
+  --color-btn-text: #1a1a1a;
+}
 
-$bg-color: #2a2a2a;
+// Brücken
+$bg-color: var(--color-bg);
+$text-white: var(--color-text);
+$color-turquoise: var(--color-primary);
+$color-teal: var(--color-secondary);
+$color-mintcream: var(--color-surface);
+$color-whitesmoke: var(--color-whitesmoke);
+
+// Statisch (kein Theming)
 $blue-player: #29b6f6;
 $orange-player: #ff9800;
 $pink-border: #e91e63;
-$text-white: #ffffff;
-
+$font-primary: "Almarai", serif;
 $font-primary: "Red Rose", serif;
-$font-primary: "aAlmarai", serif;

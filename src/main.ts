@@ -1,8 +1,8 @@
 import "../scss/main.scss";
 import { MemoryGame } from "./class/game.ts";
 import type { Theme, CardCount, Player } from "./types/types.ts";
-import {startScreenTemplate} from "./templates/startScreenTemplate.ts";
-import {settingTemplate} from "./templates/settingTemplates.ts";
+import { startScreenTemplate } from "./templates/startScreenTemplate.ts";
+import { settingTemplate } from "./templates/settingTemplates.ts";
 
 const html = String.raw;
 
@@ -24,18 +24,33 @@ class App {
 
   private showSetting() {
     this.appEL.innerHTML = settingTemplate;
+    const themeRadios = document.querySelectorAll<HTMLInputElement>(
+      'input[name="theme"]',
+    );
+    themeRadios.forEach((radio) => {
+      radio.addEventListener("change", () => {
+        document.documentElement.setAttribute("data-theme", radio.value);
+      });
+    });
+    const checkedTheme = document.querySelector<HTMLInputElement>(
+      'input[name="theme"]:checked',
+    );
+    if (checkedTheme) {
+      document.documentElement.setAttribute("data-theme", checkedTheme.value);
+    }
+    this.showSettingDocument();
+  }
+
+  private showSettingDocument() {
     document
       .querySelector("#setting-from")
       ?.addEventListener("submit", (event) => {
         event.preventDefault();
-
         const form = document.querySelector("#setting-from") as HTMLFormElement;
         const data = new FormData(form);
-
         const theme = data.get("theme") as string;
         const cardCount = Number(data.get("cardCount"));
         const player = (data.get("player") as string) || "blue";
-
         this.showGame(theme, cardCount, player);
       });
   }
