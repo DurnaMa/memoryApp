@@ -87,15 +87,13 @@ export class MemoryGame {
 
   private generateBoard(): void {
     const count = this.config.cardCount / 2;
-    const themeSymbols = THEMES[this.config.theme] || THEMES["codeVibes"];
-    const selectedSymbols = themeSymbols.slice(0, count);
+    const themeSymbols = [...(THEMES[this.config.theme] || THEMES["codeVibes"]),];
+    this.shuffle(themeSymbols); // erst shuffeln
+    const selectedSymbols = themeSymbols.slice(0, count); // dann slicen
     const gameSet = [...selectedSymbols, ...selectedSymbols];
-
     this.shuffle(gameSet);
-
     this.gridElement.innerHTML = "";
     const fragment = document.createDocumentFragment();
-
     gameSet.forEach((imagePath) => {
       const card = document.createElement("button");
       card.classList.add("card");
@@ -103,7 +101,6 @@ export class MemoryGame {
       card.innerHTML = CardTemplate(imagePath);
       fragment.appendChild(card);
     });
-
     this.gridElement.appendChild(fragment);
     this.renderUI();
   }
