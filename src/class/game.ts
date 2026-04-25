@@ -6,29 +6,7 @@ import {
   gameOverWinnerTemplate,
 } from "../templates/gameOverTemplate.ts";
 import confetti from "canvas-confetti";
-
-const THEMES: Record<string, string[]> = {
-  codeVibes: [
-    "/svg/codeVibes/Angular.svg",
-    "/svg/codeVibes/atomic.svg",
-    "/svg/codeVibes/Bootstrap.svg",
-    "/svg/codeVibes/CSS.svg",
-    "/svg/codeVibes/django.svg",
-    "/svg/codeVibes/Firebase.svg",
-    "/svg/codeVibes/github.svg",
-    "/svg/codeVibes/git.svg",
-    "/svg/codeVibes/HTML.svg",
-    "/svg/codeVibes/js.svg",
-    "/svg/codeVibes/NodeJs.svg",
-    "/svg/codeVibes/Sass.svg",
-    "/svg/codeVibes/sql.svg",
-    "/svg/codeVibes/Terminal.svg",
-    "/svg/codeVibes/ts.svg",
-    "/svg/codeVibes/vite.svg",
-    "/svg/codeVibes/VSCode.svg",
-    "/svg/codeVibes/python.svg",
-  ],
-};
+import { THEMES } from "../data/themes.ts";
 
 export class MemoryGame {
   private config: GameConfig;
@@ -88,7 +66,7 @@ export class MemoryGame {
   private generateBoard(): void {
     const count = this.config.cardCount / 2;
     const themeSymbols = [...(THEMES[this.config.theme] || THEMES["codeVibes"]),];
-    this.shuffle(themeSymbols); // erst shuffeln
+    this.shuffle(themeSymbols);
     const selectedSymbols = themeSymbols.slice(0, count); // dann slicen
     const gameSet = [...selectedSymbols, ...selectedSymbols];
     this.shuffle(gameSet);
