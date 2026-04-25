@@ -1,0 +1,108 @@
+@use "../abstract/variables" as *;
+
+.game-over {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+
+  &__panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: $bg-color;
+    transform: translateY(-100%);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.is-visible {
+      transform: translateY(0);
+    }
+  }
+
+  &__title {
+    font-size: 3rem;
+    font-family: $font-primary;
+    color: var(--color-primary);
+    -webkit-text-stroke: 2px var(--color-secondary);
+  }
+
+  &__label {
+    color: #aaa;
+    margin: 1rem 0 0.5rem;
+  }
+
+  &__scores {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__score {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+
+    &--blue {
+      color: var(--color-blue-player);
+      border: 1px solid var(--color-blue-player);
+    }
+
+    &--orange {
+      color: var(--color-orange-player);
+      border: 1px solid var(--color-orange-player);
+    }
+  }
+
+  &__confetti {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  &__winner-label {
+    color: #ccc;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__winner-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+
+    &--blue {
+      color: var(--color-blue-player);
+    }
+    &--orange {
+      color: var(--color-orange-player);
+    }
+  }
+
+  &__winner-icon {
+    width: 100px;
+    position: relative;
+    z-index: 1;
+    margin: 1rem 0;
+  }
+
+  &__restart-btn {
+    position: relative;
+    z-index: 1;
+    padding: 6px 16px;
+    background: transparent;
+    border: 1px solid #555;
+    color: #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 1rem;
+
+    &:hover {
+      border-color: #aaa;
+      color: #fff;
+    }
+  }
+}

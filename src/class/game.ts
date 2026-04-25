@@ -1,6 +1,11 @@
 import type { GameConfig } from "../types/types.ts";
 import { HeaderTemplate } from "../templates/headerTemplate.ts";
 import { CardTemplate } from "../templates/cardTemplate.ts";
+import {
+  gameOverScoreTemplate,
+  gameOverWinnerTemplate,
+} from "../templates/gameOverTemplate.ts";
+import confetti from "canvas-confetti";
 
 const THEMES: Record<string, string[]> = {
   codeVibes: [
@@ -116,10 +121,10 @@ export class MemoryGame {
       const card = target.closest(".card") as HTMLElement;
 
       if (
-          card &&
-          !this.isLocked &&
-          !card.classList.contains("is-flipped") &&
-          !card.classList.contains("is-matched")
+        card &&
+        !this.isLocked &&
+        !card.classList.contains("is-flipped") &&
+        !card.classList.contains("is-matched")
       ) {
         this.handleCardClick(card);
       }
@@ -148,7 +153,6 @@ export class MemoryGame {
   }
 
   private handleMatch(card1: HTMLElement, card2: HTMLElement): void {
-
     card1.classList.add("is-matched");
     card2.classList.add("is-matched");
 
@@ -183,16 +187,88 @@ export class MemoryGame {
   }
 
   private showWinner(): void {
-    let message: string;
+    const winner =
+      this.scoreBlue > this.scoreOrange
+        ? "blue"
+        : this.scoreOrange > this.scoreBlue
+          ? "orange"
+          : null;
 
-    if (this.scoreBlue > this.scoreOrange) {
-      message = `🎉 Blue gewinnt! (${this.scoreBlue} : ${this.scoreOrange})`;
-    } else if (this.scoreOrange > this.scoreBlue) {
-      message = `🎉 Orange gewinnt! (${this.scoreOrange} : ${this.scoreBlue})`;
-    } else {
-      message = `🤝 Unentschieden! (${this.scoreBlue} : ${this.scoreOrange})`;
+    if (winner) {
+      const prop = `--color-${winner}-player`;
+      const color = getComputedStyle(document.documentElement)
+        .getPropertyValue(prop)
+        .trim();
+
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.4 },
+        colors: [color, "#ffffff", "#f0ea6e"],
+      });
     }
+    this.showGameOverScreen(winner);
+  }
 
-    alert(message);
+  private createOverlay(): HTMLElement {
+    const overlay = document.createElement("div");
+    overlay.classList.add("game-over");
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  private slideIn(panel: HTMLElement): void {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => panel.classList.add("is-visible"));
+    });
+  }
+
+  private fireConfetti(winner: "blue" | "orange"): void {
+    const prop = `--color-${winner}-player`;
+    const color = getComputedStyle(document.documentElement)
+      .getPropertyValue(prop)
+      .trim();
+    confetti({
+      particleCount: 150,
+      spread: 80,
+      origin: { y: 0.4 },
+      colors: [color, "#ffffff", "#f0ea6e"],
+    });
+  }
+
+  private showWinnerPanel(
+    overlay: HTMLElement,
+    winner: "blue" | "orange" | null,
+  ): void {
+    overlay.innerHTML = gameOverWinnerTemplate({
+      scoreBlue: this.scoreBlue,
+      scoreOrange: this.scoreOrange,
+      winner,
+    });
+    const winnerPanel = overlay.querySelector(
+      ".game-over__panel",
+    ) as HTMLElement;
+    this.slideIn(winnerPanel);
+    if (winner) setTimeout(() => this.fireConfetti(winner), 500);
+    winnerPanel
+      .querySelector(".game-over__restart-btn")
+      ?.addEventListener("click", () => location.reload());
+  }
+
+  private showGameOverScreen(winner: "blue" | "orange" | null): void {
+    const overlay = this.createOverlay();
+    overlay.innerHTML = gameOverScoreTemplate({
+      scoreBlue: this.scoreBlue,
+      scoreOrange: this.scoreOrange,
+      winner,
+    });
+    const scorePanel = overlay.querySelector(
+      ".game-over__panel",
+    ) as HTMLElement;
+    this.slideIn(scorePanel);
+    setTimeout(() => {
+      scorePanel.classList.remove("is-visible");
+      setTimeout(() => this.showWinnerPanel(overlay, winner), 500);
+    }, 5000);
   }
 }
