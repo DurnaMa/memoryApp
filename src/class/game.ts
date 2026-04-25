@@ -1,12 +1,9 @@
-import type { GameConfig } from "../types/types.ts";
-import { HeaderTemplate } from "../templates/headerTemplate.ts";
-import { CardTemplate } from "../templates/cardTemplate.ts";
-import {
-  gameOverScoreTemplate,
-  gameOverWinnerTemplate,
-} from "../templates/gameOverTemplate.ts";
-import confetti from "canvas-confetti";
-import { THEMES } from "../data/themes.ts";
+import type { GameConfig } from '../types/types.ts';
+import { HeaderTemplate } from '../templates/headerTemplate.ts';
+import { CardTemplate } from '../templates/cardTemplate.ts';
+import { gameOverScoreTemplate, gameOverWinnerTemplate } from '../templates/gameOverTemplate.ts';
+import confetti from 'canvas-confetti';
+import { THEMES } from '../data/themes.ts';
 
 export class MemoryGame {
   private config: GameConfig;
@@ -17,7 +14,7 @@ export class MemoryGame {
 
   private scoreBlue: number = 0;
   private scoreOrange: number = 0;
-  private currentPlayer: "blue" | "orange" = "blue";
+  private currentPlayer: 'blue' | 'orange' = 'blue';
   private matchedPairs: number = 0;
   private totalPairs: number = 0;
 
@@ -25,7 +22,7 @@ export class MemoryGame {
     this.config = config;
     this.totalPairs = config.cardCount / 2;
     this.currentPlayer = config.startingPlayer;
-    const selector = config.gridSelector ?? "#field";
+    const selector = config.gridSelector ?? '#field';
     const element = document.querySelector(selector);
     if (!element) throw new Error(`Element ${selector} nicht gefunden`);
 
@@ -46,11 +43,11 @@ export class MemoryGame {
       36: 6,
     };
     const columns = gridMapping[this.config.cardCount] || 4;
-    this.gridElement.style.setProperty("--grid-cols", columns.toString());
+    this.gridElement.style.setProperty('--grid-cols', columns.toString());
   }
 
   private renderUI(): void {
-    const headerContainer = document.querySelector("#game-header");
+    const headerContainer = document.querySelector('#game-header');
     if (headerContainer) {
       headerContainer.innerHTML = HeaderTemplate({
         scoreBlue: this.scoreBlue,
@@ -58,27 +55,32 @@ export class MemoryGame {
         currentPlayer: this.currentPlayer,
       });
 
-      const exitBtn = headerContainer.querySelector(".game-header__exit-btn");
-      exitBtn?.addEventListener("click", () => location.reload());
+      const exitBtn = headerContainer.querySelector('.game-header__exit-btn');
+      exitBtn?.addEventListener('click', () => location.reload());
     }
   }
 
-  private generateBoard(): void {
-    const count = this.config.cardCount / 2;
-    const themeSymbols = [...(THEMES[this.config.theme] || THEMES["codeVibes"]),];
-    this.shuffle(themeSymbols);
-    const selectedSymbols = themeSymbols.slice(0, count); // dann slicen
-    const gameSet = [...selectedSymbols, ...selectedSymbols];
+  private getGameSymbols(): string[] {
+    const symbols = [...(THEMES[this.config.theme] || THEMES['codeVibes'])];
+    this.shuffle(symbols);
+    const selected = symbols.slice(0, this.config.cardCount / 2);
+    const gameSet = [...selected, ...selected];
     this.shuffle(gameSet);
-    this.gridElement.innerHTML = "";
+    return gameSet;
+  }
+
+  private createCard(imagePath: string): HTMLElement {
+    const card = document.createElement('button');
+    card.classList.add('card');
+    card.dataset.symbol = imagePath;
+    card.innerHTML = CardTemplate(imagePath);
+    return card;
+  }
+
+  private generateBoard(): void {
     const fragment = document.createDocumentFragment();
-    gameSet.forEach((imagePath) => {
-      const card = document.createElement("button");
-      card.classList.add("card");
-      card.dataset.symbol = imagePath;
-      card.innerHTML = CardTemplate(imagePath);
-      fragment.appendChild(card);
-    });
+    this.getGameSymbols().forEach((path) => fragment.appendChild(this.createCard(path)));
+    this.gridElement.innerHTML = '';
     this.gridElement.appendChild(fragment);
     this.renderUI();
   }
@@ -91,23 +93,18 @@ export class MemoryGame {
   }
 
   private addEventListeners(): void {
-    this.gridElement.addEventListener("click", (e) => {
+    this.gridElement.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      const card = target.closest(".card") as HTMLElement;
+      const card = target.closest('.card') as HTMLElement;
 
-      if (
-        card &&
-        !this.isLocked &&
-        !card.classList.contains("is-flipped") &&
-        !card.classList.contains("is-matched")
-      ) {
+      if (card && !this.isLocked && !card.classList.contains('is-flipped') && !card.classList.contains('is-matched')) {
         this.handleCardClick(card);
       }
     });
   }
 
   private handleCardClick(card: HTMLElement): void {
-    card.classList.add("is-flipped");
+    card.classList.add('is-flipped');
     this.flippedCards.push(card);
 
     if (this.flippedCards.length === 2) {
@@ -127,122 +124,96 @@ export class MemoryGame {
     }
   }
 
+  private incrementScore(): void {
+    if (this.currentPlayer === 'blue') this.scoreBlue++;
+    else this.scoreOrange++;
+  }
+
+  private checkGameOver(): void {
+    if (this.matchedPairs === this.totalPairs) setTimeout(() => this.showWinner(), 500);
+  }
+
   private handleMatch(card1: HTMLElement, card2: HTMLElement): void {
-    card1.classList.add("is-matched");
-    card2.classList.add("is-matched");
-
-    if (this.currentPlayer === "blue") {
-      this.scoreBlue++;
-    } else {
-      this.scoreOrange++;
-    }
-
+    card1.classList.add('is-matched');
+    card2.classList.add('is-matched');
+    this.incrementScore();
     this.matchedPairs++;
     this.flippedCards = [];
     this.isLocked = false;
-
     this.renderUI();
-
-    if (this.matchedPairs === this.totalPairs) {
-      setTimeout(() => this.showWinner(), 500);
-    }
+    this.checkGameOver();
   }
 
   private handleMismatch(card1: HTMLElement, card2: HTMLElement): void {
     setTimeout(() => {
-      card1.classList.remove("is-flipped");
-      card2.classList.remove("is-flipped");
+      card1.classList.remove('is-flipped');
+      card2.classList.remove('is-flipped');
       this.flippedCards = [];
 
-      this.currentPlayer = this.currentPlayer === "blue" ? "orange" : "blue";
+      this.currentPlayer = this.currentPlayer === 'blue' ? 'orange' : 'blue';
 
       this.isLocked = false;
       this.renderUI();
     }, 1000);
   }
 
+  private getWinner(): 'blue' | 'orange' | null {
+    if (this.scoreBlue > this.scoreOrange) return 'blue';
+    if (this.scoreOrange > this.scoreBlue) return 'orange';
+    return null;
+  }
+
   private showWinner(): void {
-    const winner =
-      this.scoreBlue > this.scoreOrange
-        ? "blue"
-        : this.scoreOrange > this.scoreBlue
-          ? "orange"
-          : null;
-
-    if (winner) {
-      const prop = `--color-${winner}-player`;
-      const color = getComputedStyle(document.documentElement)
-        .getPropertyValue(prop)
-        .trim();
-
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.4 },
-        colors: [color, "#ffffff", "#f0ea6e"],
-      });
-    }
-    this.showGameOverScreen(winner);
+    this.showGameOverScreen(this.getWinner());
   }
 
   private createOverlay(): HTMLElement {
-    const overlay = document.createElement("div");
-    overlay.classList.add("game-over");
+    const overlay = document.createElement('div');
+    overlay.classList.add('game-over');
     document.body.appendChild(overlay);
     return overlay;
   }
 
   private slideIn(panel: HTMLElement): void {
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => panel.classList.add("is-visible"));
+      requestAnimationFrame(() => panel.classList.add('is-visible'));
     });
   }
 
-  private fireConfetti(winner: "blue" | "orange"): void {
+  private fireConfetti(winner: 'blue' | 'orange'): void {
     const prop = `--color-${winner}-player`;
-    const color = getComputedStyle(document.documentElement)
-      .getPropertyValue(prop)
-      .trim();
+    const color = getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
     confetti({
       particleCount: 150,
       spread: 80,
       origin: { y: 0.4 },
-      colors: [color, "#ffffff", "#f0ea6e"],
+      colors: [color, '#ffffff', '#f0ea6e'],
     });
   }
 
-  private showWinnerPanel(
-    overlay: HTMLElement,
-    winner: "blue" | "orange" | null,
-  ): void {
+  private showWinnerPanel(overlay: HTMLElement, winner: 'blue' | 'orange' | null): void {
     overlay.innerHTML = gameOverWinnerTemplate({
       scoreBlue: this.scoreBlue,
       scoreOrange: this.scoreOrange,
       winner,
     });
-    const winnerPanel = overlay.querySelector(
-      ".game-over__panel",
-    ) as HTMLElement;
+    const winnerPanel = overlay.querySelector('.game-over__panel') as HTMLElement;
     this.slideIn(winnerPanel);
     if (winner) setTimeout(() => this.fireConfetti(winner), 500);
-    winnerPanel
-      .querySelector(".game-over__restart-btn")
-      ?.addEventListener("click", () => location.reload());
+    winnerPanel.querySelector('.game-over__restart-btn')?.addEventListener('click', () => location.reload());
   }
 
-  private showGameOverScreen(winner: "blue" | "orange" | null): void {
+  private showGameOverScreen(winner: 'blue' | 'orange' | null): void {
     const overlay = this.createOverlay();
     overlay.innerHTML = gameOverScoreTemplate({
       scoreBlue: this.scoreBlue,
       scoreOrange: this.scoreOrange,
       winner,
     });
-    const scorePanel = overlay.querySelector(
-      ".game-over__panel",
-    ) as HTMLElement;
+    const scorePanel = overlay.querySelector('.game-over__panel') as HTMLElement;
     this.slideIn(scorePanel);
     setTimeout(() => {
-      scorePanel.classList.remove("is-visible");
+      scorePanel.classList.remove('is-visible');
       setTimeout(() => this.showWinnerPanel(overlay, winner), 500);
     }, 5000);
   }
