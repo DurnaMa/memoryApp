@@ -6,6 +6,11 @@ interface HeaderProps {
   currentPlayer: string;
 }
 
+/**
+ * Returns the game header HTML with scores and active player indicator.
+ * @param props - Current scores and active player
+ * @constructor
+ */
 export const HeaderTemplate = (props: HeaderProps): string => html`
   <header class="game-header">
     <div class="game-header__score-group">

@@ -15,9 +15,6 @@ class App {
   }
 
   private showHome() {
-    this.appEL.innerHTML = html`
-      <button id="play-btn">Play</button>
-    `;
     this.appEL.innerHTML = startScreenTemplate;
     document.querySelector('#play-btn')?.addEventListener('click', () => {
       this.showSetting();
@@ -51,11 +48,15 @@ class App {
   private showSettingDocument() {
     document.querySelector('#setting-from')?.addEventListener('submit', (event) => {
       event.preventDefault();
-      const form = document.querySelector('#setting-from') as HTMLFormElement;
+      const form = event.target as HTMLFormElement;
       const data = new FormData(form);
-      const theme = data.get('theme') as string;
-      const cardCount = Number(data.get('cardCount'));
-      const player = (data.get('player') as string) || 'blue';
+
+      const theme = data.get('theme') as Theme;
+      const cardCount = Number(data.get('cardCount')) as CardCount;
+      const player = (data.get('player') ?? 'blue') as Player;
+
+      if (!theme || !cardCount || !player) return;
+
       this.showGame(theme, cardCount, player);
     });
   }
@@ -74,6 +75,7 @@ class App {
       cardCount: cardCount as CardCount,
       startingPlayer: player as Player,
     });
+    document.addEventListener('game:exit', () => this.showSetting(), { once: true });
   }
 }
 

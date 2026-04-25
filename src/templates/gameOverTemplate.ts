@@ -6,6 +6,11 @@ interface GameOverProps {
   winner: "blue" | "orange" | null;
 }
 
+/**
+ * Returns the score screen HTML shown at the end of the game.
+ * Displays both players' final scores.
+ * @param props - Final scores and winner
+ */
 export const gameOverScoreTemplate = (props: GameOverProps): string => html`
   <div class="game-over__panel">
     <h1 class="game-over__title">Game over</h1>
@@ -21,6 +26,11 @@ export const gameOverScoreTemplate = (props: GameOverProps): string => html`
   </div>
 `;
 
+/**
+ * Returns the winner announcement panel HTML.
+ * Shows "DRAW" or the winning player's name and icon.
+ * @param props - Final scores and winner
+ */
 export const gameOverWinnerTemplate = (props: GameOverProps): string => {
     const isDraw = props.winner === null;
 

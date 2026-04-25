@@ -1,3 +1,6 @@
+/**
+ * Maps theme keys to their corresponding SVG symbol paths.
+ */
 export const THEMES: Record<string, string[]> = {
   codeVibes: [
     '/svg/codeVibes/Angular.svg',
