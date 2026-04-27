@@ -22,6 +22,7 @@ class App {
   }
 
   private showSetting() {
+    document.documentElement.removeAttribute('data-theme');
     this.appEL.innerHTML = settingTemplate;
     const previewImg = document.querySelector<HTMLImageElement>('.settings__preview-card--back img');
     const PREVIEW_IMAGES: Record<string, string> = {
@@ -30,19 +31,63 @@ class App {
       daProjects: '/svg/daProjectsTheme/16_Pollapp.svg',
       foods: '/svg/foods/01@3x1.svg',
     };
-    const themeRadios = document.querySelectorAll<HTMLInputElement>('input[name="theme"]');
-    themeRadios.forEach((radio) => {
-      radio.addEventListener('change', () => {
-        document.documentElement.setAttribute('data-theme', radio.value);
-        if (previewImg) previewImg.src = PREVIEW_IMAGES[radio.value] ?? '';
-      });
-    });
+    this.setupThemePreviewListeners(previewImg, PREVIEW_IMAGES);
     const checkedTheme = document.querySelector<HTMLInputElement>('input[name="theme"]:checked');
     if (checkedTheme) {
       document.documentElement.setAttribute('data-theme', checkedTheme.value);
       if (previewImg) previewImg.src = PREVIEW_IMAGES[checkedTheme.value] ?? '';
     }
+    this.showSetingValidateForm();
     this.showSettingDocument();
+  }
+
+  /**
+   * When you hover over an item, the preview shows the card decks and game board theme.
+   * @param previewImg
+   * @param PREVIEW_IMAGES
+   * @private
+   */
+  private setupThemePreviewListeners(
+      previewImg: HTMLImageElement | null,
+      PREVIEW_IMAGES: Record<string, string>
+  ) {
+    const previewContainer = document.querySelector<HTMLElement>('.settings__preview');
+    const themeRadios = document.querySelectorAll<HTMLInputElement>('input[name="theme"]');
+    const applyPreview = (theme: string) => {
+      previewContainer?.setAttribute('data-theme', theme);
+      if (previewImg) previewImg.src = PREVIEW_IMAGES[theme] ?? '';
+    };
+    const revertToChecked = () => {
+      const checked = document.querySelector<HTMLInputElement>('input[name="theme"]:checked');
+      if (checked) applyPreview(checked.value);
+    };
+    themeRadios.forEach((radio) => {
+      radio.addEventListener('change', () => applyPreview(radio.value));
+      const label = radio.closest('label');
+      label?.addEventListener('mouseenter', () => applyPreview(radio.value));
+      label?.addEventListener('mouseleave', revertToChecked);
+    });
+  }
+
+  /**
+   * Form validation to ensure all fields are filled out before starting the game.
+   * @private
+   */
+  private showSetingValidateForm() {
+    const form = document.querySelector<HTMLFormElement>('#setting-from');
+    const submitBtn = document.querySelector<HTMLButtonElement>('.settings__submit');
+
+    if (form && submitBtn) {
+      const validateForm = () => {
+        const formData = new FormData(form);
+        const hasPlayer = formData.has('player');
+        const hasCardCount = formData.has('cardCount');
+        submitBtn.disabled = !(hasPlayer && hasCardCount);
+      };
+
+      form.addEventListener('change', validateForm);
+      validateForm();
+    }
   }
 
   private showSettingDocument() {
@@ -62,6 +107,7 @@ class App {
   }
 
   private showGame(theme: string, cardCount: number, player: string) {
+    document.documentElement.setAttribute('data-theme', theme);
     this.appEL.innerHTML = html`
       <section>
         <div class="memory-board">

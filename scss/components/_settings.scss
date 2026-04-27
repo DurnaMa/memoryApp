@@ -273,11 +273,18 @@
     font-size: 1rem;
     transition:
       transform 0.1s,
-      background-color 0.2s;
+      background-color 0.2s,
+      opacity 0.2s;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: color-mix(in srgb, var(--color-btn-bg) 85%, black);
       transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
     }
 
     &::before {

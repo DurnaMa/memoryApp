@@ -12,7 +12,7 @@ export const settingTemplate = html`
         />
       </h2>
       <form class="settings__form" id="setting-from">
-        <fieldset class="settings__fieldset">
+        <fieldset class="settings__fieldset" data-group="theme">
           <legend>
             <img class="" src="/svg/settings/palette.svg" alt="palette" />
             Theme
@@ -34,13 +34,13 @@ export const settingTemplate = html`
             Foods theme
           </label>
         </fieldset>
-        <fieldset class="settings__fieldset">
+        <fieldset class="settings__fieldset" data-group="player">
           <legend>
             <img class="" src="/svg/settings/chess_pawn.svg" alt="chess_pawn" />
             Choose player
           </legend>
           <label>
-            <input type="radio" name="player" value="blue" checked />
+            <input type="radio" name="player" value="blue"/>
             Blue
           </label>
           <label>
@@ -48,13 +48,13 @@ export const settingTemplate = html`
             Orange
           </label>
         </fieldset>
-        <fieldset class="settings__fieldset">
+        <fieldset class="settings__fieldset" data-group="cardCount">
           <legend>
             <img class="" src="/svg/settings/style.svg" alt="style" />
             Board size
           </legend>
           <label>
-            <input type="radio" name="cardCount" value="16" checked />
+            <input type="radio" name="cardCount" value="16"/>
             16
           </label>
           <label>
@@ -100,7 +100,7 @@ export const settingTemplate = html`
         <span>Player</span>
         <img src="/svg/settings/verticalLine.svg" alt="verticalLine" />
         <span>Board size</span>
-        <button class="settings__submit" type="submit" form="setting-from">
+        <button class="settings__submit" type="submit" form="setting-from" disabled>
           Start
         </button>
       </div>
