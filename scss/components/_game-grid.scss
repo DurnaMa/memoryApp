@@ -1,9 +1,8 @@
 .game-grid {
   display: grid;
-  // Fallback auf 4 Spalten, falls --grid-cols nicht gesetzt ist
   grid-template-columns: repeat(var(--grid-cols, 4), 1fr);
   gap: 1rem;
   width: 100%;
-  max-width: 800px; // Damit das Grid auf großen Bildschirmen nicht zu breit wird
+  max-width: 800px;
   margin: 0 auto;
 }

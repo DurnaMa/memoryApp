@@ -8,6 +8,7 @@
   padding: 6rem 4rem;
   background-color: var(--color-settings-bg);
   font-family: sans-serif;
+  box-shadow: 0 0 0 100vw var(--color-settings-bg);;
 
   &__left {
     display: flex;

@@ -11,3 +11,9 @@ body {
   background-color: $bg-color;
   color: $text-white;
 }
+
+#app {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  min-height: 100vh;
+}
