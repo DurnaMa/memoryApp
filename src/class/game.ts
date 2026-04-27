@@ -277,7 +277,10 @@ export class MemoryGame {
     const winnerPanel = overlay.querySelector('.game-over__panel') as HTMLElement;
     this.slideIn(winnerPanel);
     if (winner) setTimeout(() => this.fireConfetti(winner), 500);
-    winnerPanel.querySelector('.game-over__restart-btn')?.addEventListener('click', () => location.reload());
+    winnerPanel.querySelector('.game-over__restart-btn')?.addEventListener('click', () => {
+      document.querySelectorAll('.game-over').forEach((el) => el.remove());
+      document.dispatchEvent(new CustomEvent('game:exit'));
+    });
   }
 
   /**

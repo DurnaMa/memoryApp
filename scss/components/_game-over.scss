@@ -30,8 +30,9 @@
   }
 
   &__label {
-    color: #aaa;
+    color: color-mix(in srgb, var(--color-text) 60%, transparent);
     margin: 1rem 0 0.5rem;
+    font-size: 1.2rem;
   }
 
   &__scores {
@@ -42,7 +43,7 @@
   &__score {
     padding: 4px 10px;
     border-radius: 4px;
-    font-size: 0.85rem;
+    font-size: 1.2rem;
 
     &--blue {
       color: var(--color-blue-player);
@@ -63,9 +64,10 @@
   }
 
   &__winner-label {
-    color: #ccc;
+    color: color-mix(in srgb, var(--color-text) 70%, transparent);
     position: relative;
     z-index: 1;
+    font-size: 1.2rem;
   }
 
   &__winner-name {
@@ -95,14 +97,14 @@
     padding: 6px 16px;
     background: transparent;
     border: 1px solid #555;
-    color: #eeeeee;
+    color: color-mix(in srgb, var(--color-text) 60%, transparent);
     cursor: pointer;
     border-radius: 4px;
     margin-top: 1rem;
 
     &:hover {
       border-color: #aaa;
-      color: #fff;
+      color: color-mix(in srgb, var(--color-text) 60%, transparent);
     }
   }
 }
